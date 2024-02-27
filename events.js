@@ -22,7 +22,7 @@ module.exports.listen = function (client) {
 		try {
 			if (interaction.commandName === 'reload') {
 				// Check if the user is authorized to execute the reload command
-				if (interaction.user.id !== '312261897070051339') {
+				if (interaction.user.id !== '312261897070051339' || interaction.user.id !== '436120705122172928') {
 					throw new Error('Not Authorized');
 				}
 			}
