@@ -1,10 +1,7 @@
 const { Events, ActivityType } = require('discord.js');
-const sendMessage = async function(client, id) {
-	const channel = await client.channels.fetch(id);
-	await channel.send('hello');
-};
-module.exports.listen = function(client) {
-	client.once(Events.ClientReady, async readyClient => {
+
+module.exports.listen = function (client) {
+	client.once(Events.ClientReady, async function () {
 		client.user.setPresence({
 			status: 'dnd',
 			activities: [{
@@ -23,14 +20,18 @@ module.exports.listen = function(client) {
 			return;
 		}
 		try {
+			if (interaction.commandName === 'reload') {
+				// Check if the user is authorized to execute the reload command
+				if (interaction.user.id !== '312261897070051339') {
+					throw new Error('Not Authorized');
+				}
+			}
 			await command.execute(interaction);
 			console.log(`Interaction: ${interaction.commandName} has been done successfully`);
-		} catch (error) {
-			console.error(error);
-			await interaction.followUp({
-				content: 'There was an error while executing this command!',
-				ephemeral: true,
-			});
+		}
+		catch (error) {
+			console.error(error.message);
+			await interaction.reply(error.message);
 		}
 	});
 };
