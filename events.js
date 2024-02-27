@@ -1,4 +1,5 @@
 const { Events, ActivityType } = require('discord.js');
+const { authorsIds } = require('./config.json');
 
 module.exports.listen = function (client) {
 	client.once(Events.ClientReady, async function () {
@@ -22,7 +23,7 @@ module.exports.listen = function (client) {
 		try {
 			if (interaction.commandName === 'reload') {
 				// Check if the user is authorized to execute the reload command
-				if (interaction.user.id !== '312261897070051339' || interaction.user.id !== '436120705122172928') {
+				if (authorsIds.includes(interaction.user.id)) {
 					throw new Error('Not Authorized');
 				}
 			}
