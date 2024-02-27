@@ -1,4 +1,4 @@
-const { Client, Collection, Events, GatewayIntentBits: { Guilds }, Activity, ActivityType } = require('discord.js');
+const { Client, Collection, GatewayIntentBits: { Guilds } } = require('discord.js');
 const { token } = require('./config.json');
 
 const bot = new Client({ intents: [Guilds] });
@@ -6,7 +6,8 @@ const bot = new Client({ intents: [Guilds] });
 const start = async function() {
 	try {
 		await bot.login(token);
-	} catch (e) {
+	}
+	catch (e) {
 		console.log(e);
 		setTimeout(() => start(), 5000);
 	}
@@ -14,7 +15,7 @@ const start = async function() {
 
 
 bot.commands = new Collection(require('./deploy-commands.js'));
-let events = require('./events.js');
+const events = require('./events.js');
 
 events.listen(bot);
 

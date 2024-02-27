@@ -3,13 +3,18 @@ const info = new EmbedBuilder();
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('avatar')
-		.setDescription('Replies with the avatar of the user'),
+		.setDescription('Replies with the avatar of the user')
+		.addUserOption(option => option
+			.setName('user')
+			.setDescription('Test')
+			.setRequired(false)),
 	async execute(interaction) {
-		const member = interaction.member;
-		const userRoleColor = member.roles.highest.color;
+		let user = interaction.options.getMember('user');
+		if (!user) user = interaction.member;
 
+		const userRoleColor = user.roles.highest.color;
 		info.setColor(userRoleColor)
-			.setImage(member.user.displayAvatarURL({ dynamic: true }))
+			.setImage(user.user.displayAvatarURL({ dynamic: true }))
 			.setFooter({
 				text: 'Requested by ' + interaction.user.tag,
 				iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
