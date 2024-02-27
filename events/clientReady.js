@@ -1,9 +1,10 @@
-const { ActivityType } = require('discord.js');
+const { ActivityType , Events} = require('discord.js');
+
 module.exports = {
-	name: 'ready',
+	name: Events.ClientReady.toString(),
 	once: true,
 	async execute(client) {
-		client.user.setPresence({
+		await client.user.setPresence({
 			status: 'dnd',
 			activities: [{
 				name: 'customstatus',

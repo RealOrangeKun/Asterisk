@@ -1,6 +1,5 @@
 const { Client, Collection, Events, GatewayIntentBits: { Guilds }, Activity, ActivityType } = require('discord.js');
 const { token } = require('./config.json');
-const commands = require('./deploy-commands.js');
 
 const bot = new Client({ intents: [Guilds] });
 
@@ -12,36 +11,39 @@ const start = async function() {
 	}
 };
 
-bot.commands = new Collection(commands);
-bot.ready = require('./events/clientReady');
-bot.interactionCreate = require('./events/interactionCreate');
+
+bot.commands = new Collection(require('./deploy-commands.js'));
+bot.events = require('./events.js');
 
 bot.once(Events.ClientReady, readyClient => {
 	try {
-		bot.ready.execute(bot);
+		bot.events.get(Events.ClientReady.toString()).execute(bot);
+		console.log(`${readyClient.user.tag}`);
 	} catch (e) {
 		console.error(e);
-	} finally {
-		console.log(`${readyClient.user.tag}`);
 	}
 });
-
 bot.on(Events.InteractionCreate, async interaction => {
-	await bot.interactionCreate.execute(interaction);
+	try {
+		await bot.events.get(Events.InteractionCreate.toString()).execute(interaction);
+	} catch (e) {
+		console.error(e);
+	}
+
 });
 bot.on(Events.GuildMemberAdd, async member => {
 	try {
-		await member.guild.systemChannel.send(`Welcome ${member.displayName} to the ${member.guild.name} server!`);
+		await bot.events.get(Events.GuildMemberAdd.toString()).execute(member);
 	} catch (e) {
 		console.error(e);
 	}
+
 });
 bot.on(Events.GuildMemberRemove, async member => {
 	try {
-		await member.guild.systemChannel.send(`${member.displayName} has sadly left us!`);
+		await bot.events.get(Events.GuildMemberRemove.toString()).execute(member);
 	} catch (e) {
 		console.error(e);
 	}
 });
-
 start();
