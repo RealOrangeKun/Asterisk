@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const info = new EmbedBuilder();
+
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('avatar')
@@ -9,6 +9,7 @@ module.exports = {
 			.setDescription('Test')
 			.setRequired(false)),
 	async execute(interaction) {
+		const info = new EmbedBuilder();
 		let user = interaction.options.getMember('user');
 		if (!user) user = interaction.member;
 
