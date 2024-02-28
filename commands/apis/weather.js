@@ -11,10 +11,9 @@ module.exports = {
             .setDescription('City to get weather for')
             .setRequired(true)),
     async execute(interaction) {
-        await interaction.reply({ content: 'Getting Weather Data...', fetchReply: true, ephemeral: true });
+        await interaction.reply({ content: 'Getting Weather Data...', fetchReply: true, ephemeral: false });
         const city = interaction.options.getString('city').toLowerCase();
         const locationCodeAPI = `http://dataservice.accuweather.com/locations/v1/cities/autocomplete?apikey=96tQ0vPbj0Wz1Wttb1j2d6maz8V7HPif&q=${city}`;
-
         try {
             const locationData = await axios.get(locationCodeAPI);
             const locationKey = locationData.data[0].Key;
@@ -35,7 +34,7 @@ module.exports = {
                 )
                 .setFooter({ text: 'Powered by AccuWeather' })
                 .setThumbnail(url);
-            await interaction.reply({ embeds: [weatherInfo], ephemeral: false });
+            await interaction.editReply({ embeds: [weatherInfo], ephemeral: false });
         }
         catch (error) {
             console.error('Error fetching weather data:', error.response.data.Message);

@@ -20,7 +20,7 @@ module.exports.listen = function (client) {
 			console.error(`No command matching ${interaction.commandName} was found.`);
 			return;
 		}
-		try {
+
 			if (interaction.commandName === 'reload') {
 				// Check if the user is authorized to execute the reload command
 				if (!authorsIds.includes(interaction.user.id)) {
@@ -29,10 +29,5 @@ module.exports.listen = function (client) {
 			}
 			await command.execute(interaction);
 			console.log(`Interaction: ${interaction.commandName} has been done successfully`);
-		}
-		catch (error) {
-			console.error(error.message);
-			await interaction.reply(error.message);
-		}
 	});
 };
