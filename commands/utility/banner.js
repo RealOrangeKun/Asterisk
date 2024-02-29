@@ -1,4 +1,5 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+// eslint-disable-next-line no-unused-vars
+const { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder } = require('discord.js');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('banner')
@@ -7,6 +8,10 @@ module.exports = {
 			.setName('user')
 			.setDescription('Send banner of user')
 			.setRequired(false)),
+	/**
+*
+* @param {ChatInputCommandInteraction} interaction
+*/
 	async execute(interaction) {
 		try {
 			const info = new EmbedBuilder();

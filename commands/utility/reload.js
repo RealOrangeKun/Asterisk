@@ -1,6 +1,7 @@
-const { SlashCommandBuilder } = require('discord.js');
+// eslint-disable-next-line no-unused-vars
+const { SlashCommandBuilder, ChatInputCommandInteraction } = require('discord.js');
 const path = require('path');
-const { utility, apis } = require('./commands.json');
+const { utility } = require('./commands.json');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('reload')
@@ -9,6 +10,10 @@ module.exports = {
             option.setName('command')
                 .setDescription('Command to be reloaded')
                 .setRequired(true)),
+    /**
+*
+* @param {ChatInputCommandInteraction} interaction
+*/
     async execute(interaction) {
         try {
             const commandName = interaction.options.getString('command', true).toLowerCase();
@@ -33,6 +38,7 @@ module.exports = {
 
             interaction.client.commands.delete(command.data.name);
             let newCommand;
+            const name = command.data.name;
             if (utility.includes(command.data.name)) {
                 newCommand = require(`./${command.data.name}.js`);
             }
@@ -45,8 +51,8 @@ module.exports = {
                     }
                 }
             }
-            interaction.client.commands.set(newCommand.data.name, newCommand);
-            await interaction.reply({ content: `Command \`${newCommand.data.name}\` was reloaded!`, ephemeral: true });
+            interaction.client.commands.set(name, newCommand);
+            await interaction.reply({ content: `Command \`${name}\` was reloaded!`, ephemeral: true });
         }
         catch (e) {
             console.log(e);
