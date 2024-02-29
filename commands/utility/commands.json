@@ -1,0 +1,13 @@
+{
+    "utility": [
+        "avatar",
+        "banner",
+        "ping",
+        "reload",
+        "server",
+        "user"
+    ],
+    "apis":[
+        "weather"
+    ]
+}

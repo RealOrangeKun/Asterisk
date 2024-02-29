@@ -34,7 +34,7 @@ module.exports = {
                 )
                 .setFooter({ text: 'Powered by AccuWeather' })
                 .setThumbnail(url);
-            await interaction.editReply({ embeds: [weatherInfo], ephemeral: false });
+            await interaction.editReply({ content: '', embeds: [weatherInfo], ephemeral: false });
         }
         catch (error) {
             console.error('Error fetching weather data:', error.response.data.Message);
