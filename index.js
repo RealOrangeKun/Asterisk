@@ -3,7 +3,7 @@ const { token } = require('./config.json');
 
 const bot = new Client({ intents: [Guilds] });
 
-const start = async function() {
+const start = async function () {
 	try {
 		await bot.login(token);
 	}
@@ -21,3 +21,7 @@ events.listen(bot);
 
 
 start();
+
+module.exports = {
+	bot,
+};

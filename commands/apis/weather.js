@@ -1,4 +1,4 @@
-const axios = require('axios');
+const { default: axios } = require('axios');
 // eslint-disable-next-line no-unused-vars
 const { ChatInputCommandInteraction } = require('discord.js');
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
@@ -42,10 +42,21 @@ module.exports = {
                     'X-RapidAPI-Host': 'ai-weather-by-meteosource.p.rapidapi.com',
                 },
             });
+            const astro = await axios.get('https://ai-weather-by-meteosource.p.rapidapi.com/astro', {
+                params: {
+                    place_id: placeId,
+                    timezone: 'auto',
+                }, headers: {
+                    'X-RapidAPI-Key': weatherKey,
+                    'X-RapidAPI-Host': 'ai-weather-by-meteosource.p.rapidapi.com',
+                },
+            });
+            const currentDay = astro.data.astro.data[0];
+            const sunRise = new Date(currentDay.sun.rise).getHours(), sunSet = new Date(currentDay.sun.set).getHours();
             const temp = weatherData.data.current.temperature, feelsLike = weatherData.data.current.feels_like, uvIndex = weatherData.data.current.uv_index;
             const currentTime = moment().tz(String(timezone));
-            const timeOfDay = currentTime.hours() >= 0 && currentTime.hours() < 12 ? 'morning' : 'night';
-            const url = timeOfDay === 'morning' ? 'https://cdn-icons-png.flaticon.com/512/869/869869.png' : 'https://cdn-icons-png.flaticon.com/512/1823/1823324.png';
+            const timeOfDay = currentTime.hours() >= sunRise && currentTime.hours() < sunSet ? 'morning' : 'night';
+            const url = timeOfDay === 'morning' ? 'https://clipart-library.com/images/5TRrMA4yc.gif' : 'https://i.pinimg.com/originals/f5/18/fd/f518fdc490de3370d52171697dff2759.gif';
             const weatherInfo = new EmbedBuilder()
                 .setTitle(`Weather for ${city.charAt(0).toUpperCase() + city.substr(1).toLowerCase()}`)
                 .addFields(
@@ -54,6 +65,9 @@ module.exports = {
                     { name: 'Feels Like', value: `${feelsLike} °C`, inline: true },
                     { name: 'UV Index', value: String(uvIndex), inline: true },
                     { name: 'Timezone', value: timezone, inline: true },
+                    { name: 'Current Date and Time', value: String(currentTime), inline: true },
+                    { name: 'Sunrise Time', value: String(currentDay.sun.rise).split('T')[1] },
+                    { name: 'Sunset Time', value: String(currentDay.sun.set).split('T')[1] },
                 )
                 .setFooter({ text: 'Powered by Meteosource' })
                 .setThumbnail(url);

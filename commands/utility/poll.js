@@ -17,7 +17,7 @@ module.exports = {
         try {
             const question = interaction.options.getString('question');
             const poll = new EmbedBuilder()
-                .setDescription(`Question: ${question}`)
+                .setTitle(`Question: ${question}`)
                 .setImage('https://i.ibb.co/vxdBKFd/Untitled-1.gif')
                 .addFields([
                     { name: 'Yes\'s', value: '0', inline: true },
@@ -34,7 +34,7 @@ module.exports = {
             await Reply.edit({ components: [pollOptions] });
         }
         catch (e) {
-            console.log(e)
+            console.log(e);
             await interaction.editReply('Couldn\'t make the poll!');
         }
 
