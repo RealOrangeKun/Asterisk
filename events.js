@@ -24,6 +24,7 @@ module.exports.listen = function (client) {
 		if (interaction.isChatInputCommand()) {
 			if (!command) {
 				console.error(`No command matching ${interaction.commandName} was found.`);
+				await interaction.reply({ content: `No command matching ${interaction.commandName} was found.`, ephemeral: true });
 				return;
 			}
 
