@@ -10,8 +10,8 @@ module.exports = {
  * @param {ChatInputCommandInteraction} interaction
  */
 	async execute(interaction) {
-		const sent = await interaction.reply({ content: 'Pinging...', fetchReply: true });
+
+		const sent = await interaction.reply({ content: 'Pinging...', fetchReply: true, ephemeral: true });
 		await interaction.editReply(`Roundtrip latency: ${sent.createdTimestamp - interaction.createdTimestamp}ms`);
-		await setTimeout(async () => await interaction.deleteReply(), 1500);
 	},
 };
