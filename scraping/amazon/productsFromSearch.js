@@ -16,23 +16,30 @@ const getProductsFromSearch = async (productName) => {
             'Content-Type': 'text/html',
         },
     });
-    const dom = new JSDOM(response.data).window.document;
-    const products = [], titles = [], prices = [];
-    dom.querySelectorAll('h2.a-size-mini.a-spacing-none.a-color-base.s-line-clamp-2').forEach(title => {
-        titles.push(title.textContent.trim());
-    });
-    dom.querySelectorAll('span.a-price-whole').forEach(price => {
-        prices.push(price.textContent.trim().slice(0, -1));
-    });
-    for (let i = 0; i < prices.length; i++) {
-        products.push({
-            'title': titles[i],
-            'price': prices[i],
+    try {
+        const dom = new JSDOM(response.data, {
+            'resources': 'usable',
+            'pretendToBeVisual': true,
+        }).window.document;
+        const products = [], titles = [], prices = [];
+        dom.querySelectorAll('h2.a-size-mini.a-spacing-none.a-color-base.s-line-clamp-2').forEach(title => {
+            titles.push(title.textContent.trim());
         });
+        dom.querySelectorAll('span.a-price-whole').forEach(price => {
+            prices.push(price.textContent.trim().slice(0, -1));
+        });
+        for (let i = 0; i < prices.length; i++) {
+            products.push({
+                'title': titles[i],
+                'price': prices[i],
+            });
+        }
+        return products;
     }
-    return products;
+    catch (e) {
+        console.log('err');
+    }
 };
-
 
 module.exports = {
     getProductsFromSearch,

@@ -1,6 +1,5 @@
 // eslint-disable-next-line no-unused-vars
 const { SlashCommandBuilder, EmbedBuilder, ChatInputCommandInteraction } = require('discord.js');
-const { default: axios } = require('axios');
 const { getProductsFromSearch } = require('../../../scraping/amazon/productsFromSearch.js');
 
 module.exports = {
@@ -16,6 +15,8 @@ module.exports = {
      * @param {ChatInputCommandInteraction} interaction
      */
     async execute(interaction) {
-        await interaction.reply(JSON.stringify(await getProductsFromSearch(interaction.options.getString('product'))[0], null, 4));
+        const products = await getProductsFromSearch(interaction.options.getString('product'));
+        const title = products[0].title;
+        await interaction.reply({ content: `${title}\n$${products[0].price}`, ephemeral: true });
     },
 };

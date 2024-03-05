@@ -5,33 +5,37 @@ const path = require('path');
 
 const commands = [], commands2 = [];
 const commandsMap = new Map();
-// Grab all the command folders from the commands directory you created earlier
-const foldersPath = path.join(__dirname, 'commands');
-const commandFolders = fs.readdirSync(foldersPath);
 
-for (const folder of commandFolders) {
-	// Grab all the command files from the commands directory you created earlier
-	const commandsPath = path.join(foldersPath, folder);
-	const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
-	// Grab the SlashCommandBuilder#toJSON() output of each command's data for deployment
-	for (const file of commandFiles) {
-		const filePath = path.join(commandsPath, file);
-		const command = require(filePath);
-		if ('data' in command && 'execute' in command) {
-			if (adminCommands.includes(command.data.name)) {
-				commands2.push(command.data.toJSON());
-				commandsMap.set(command.data.name, command);
+
+function readCommands(dir) {
+	const files = fs.readdirSync(dir);
+	for (const file of files) {
+		const filePath = path.join(dir, file);
+		const stat = fs.lstatSync(filePath);
+		if (stat.isDirectory()) {
+			readCommands(filePath);
+		}
+		else if (file.endsWith('.js')) {
+			const command = require(filePath);
+			if ('data' in command && 'execute' in command) {
+				if (adminCommands.includes(command.data.name)) {
+					commands2.push(command.data.toJSON());
+					commandsMap.set(command.data.name, command);
+				}
+				else {
+					commands.push(command.data.toJSON());
+					commandsMap.set(command.data.name, command);
+				}
 			}
 			else {
-				commands.push(command.data.toJSON());
-				commandsMap.set(command.data.name, command);
+				console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
 			}
-		}
-		else {
-			console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
 		}
 	}
 }
+
+// Call readCommands with the commands directory path
+readCommands(path.join(__dirname, 'commands'));
 
 // Construct and prepare an instance of the REST module
 const rest = new REST().setToken(token);
