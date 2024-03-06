@@ -1,11 +1,12 @@
 {
   "name": "asterisk",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.2.0",
+  "description": "Asterisk Discord bot",
   "main": "index.js",
   "scripts": {
     "test": "echo 'Hello, World!'",
-    "start": "node --no-warnings index.js"
+    "start": "node --no-warnings index.js",
+    "watch": "node --watch --no-warnings index.js"
   },
   "dependencies": {
     "axios": "^1.6.7",
@@ -15,6 +16,6 @@
     "moment-timezone": "^0.5.45"
   },
   "keywords": [],
-  "author": "",
+  "author": "Orangekun",
   "license": "ISC"
 }

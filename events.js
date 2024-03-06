@@ -85,14 +85,24 @@ module.exports.listen = function (client) {
 			}
 			else if (info[0] === 'Amazon') {
 				const amazon = interaction.client.commands.get('amazon');
-				const embed = interaction.message.embeds[0];
 				const key = `${interaction.user.id}`;
+				if (!pages.has(key)) {
+					await interaction.deferUpdate();
+					return;
+				}
+				let newStart, last;
 				switch (info[1]) {
 					case 'Forward': {
-						pages.set(key, await amazon.forward(interaction, pages.get(key)));
+						[newStart, last] = await amazon.forward(interaction, pages.get(key));
+						pages.set(key, newStart);
+					} break;
+					case 'Backward': {
+						[newStart, last] = await amazon.backward(interaction, pages.get(key));
+						pages.set(key, newStart);
 					} break;
 				}
-				await interaction.reply({ content: 'Next Page', ephemeral: true });
+				if (last) await interaction.reply({ content: 'Last Page Reached!', ephemeral: true });
+				else await interaction.deferUpdate();
 			}
 		}
 	},

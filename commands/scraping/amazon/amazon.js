@@ -26,7 +26,7 @@ module.exports = {
                 if (embedLength >= 5000) break;
                 info.addFields(
                     {
-                        name: 'Product Name', value: `[${products[i].title}](${products[i].link}) - ` +
+                        name: 'Product ' + String(i + 1), value: `[${products[i].title}](${products[i].link}) - ` +
                             products[i].price + '\n', inline: false,
                     },
                 );
@@ -37,7 +37,6 @@ module.exports = {
                     new ButtonBuilder().setEmoji('➡️').setStyle(ButtonStyle.Secondary).setCustomId('Amazon-Forward-' + String(interaction.user.id)),
                 );
             await interaction.followUp({ embeds: [info], ephemeral: false, components: [options], fetchReply: true });
-            console.log(i);
             return i;
         }
         catch (e) {
@@ -51,30 +50,61 @@ module.exports = {
     * @param {Number} start
     */
     async forward(interaction, start) {
-        let i = start;
+        let i;
         const info = new EmbedBuilder();
         const options = new ActionRowBuilder()
-        .addComponents(
-            new ButtonBuilder().setEmoji('➡️').setStyle(ButtonStyle.Secondary).setCustomId('Amazon-Forward-' + String(interaction.user.id)),
-        );
+            .addComponents(
+                new ButtonBuilder().setEmoji('⬅️').setStyle(ButtonStyle.Secondary).setCustomId('Amazon-Backward-' + String(interaction.user.id)),
+                new ButtonBuilder().setEmoji('➡️').setStyle(ButtonStyle.Secondary).setCustomId('Amazon-Forward-' + String(interaction.user.id)),
+            );
         if (start >= products.length) {
-            info.setTitle('Last Page Reached!');
+            return [start - 1, true];
         }
         else {
             let embedLength = 0;
             for (i = start; i < products.length; i++) {
-                if (embedLength >= 5000) break;
+                if (embedLength >= 3000) break;
                 info.addFields(
                     {
-                        name: 'Product Name', value: `[${products[i].title}](${products[i].link}) - ` +
+                        name: 'Product ' + String(i + 1), value: `[${products[i].title}](${products[i].link}) - ` +
                             products[i].price + '\n', inline: false,
                     },
                 );
                 embedLength += products[i].title.length + products[i].link.length;
             }
+            await interaction.message.edit({ embeds: [info], components: [options] });
+            return [i, false];
         }
-        await interaction.message.edit({ embeds: [info], components: [options] });
-        console.log(i, products.length);
-        return i;
+    },
+    /**
+    *
+    * @param {ButtonInteraction} interaction
+    * @param {Number} start
+    */
+    async backward(interaction, start) {
+        let i;
+        const info = new EmbedBuilder();
+        const options = new ActionRowBuilder()
+            .addComponents(
+                new ButtonBuilder().setEmoji('⬅️').setStyle(ButtonStyle.Secondary).setCustomId('Amazon-Backward-' + String(interaction.user.id)),
+                new ButtonBuilder().setEmoji('➡️').setStyle(ButtonStyle.Secondary).setCustomId('Amazon-Forward-' + String(interaction.user.id)),
+            );
+        if (start <= 0) {
+            return [0, true];
+        }
+        else {
+            let embedLength = 0;
+            for (i = start; embedLength < 3000 && i >= 0; i--) {
+                info.addFields(
+                    {
+                        name: 'Product ' + String(i + 1), value: `[${products[i].title}](${products[i].link}) - ` +
+                            products[i].price + '\n', inline: false,
+                    },
+                );
+                embedLength += products[i].title.length + products[i].link.length;
+            }
+            await interaction.message.edit({ embeds: [info], components: [options] });
+            return [i, false];
+        }
     },
 };

@@ -26,21 +26,21 @@ function readCommands(dir) {
 					commands.push(command.data.toJSON());
 					commandsMap.set(command.data.name, command);
 				}
-				console.log(chalk.green(`[SUCCESS] Command "${command.data.name}" added successfully.`));
+				console.log('|' + chalk.green(`[SUCCESS] Command "${command.data.name}" added successfully.`) + '✅');
 			}
 			else {
-				console.log(chalk.yellow(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`));
+				console.log('|' + chalk.yellow(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`));
 			}
 		}
 	}
 }
-
+console.log('--------------------Commands--------------------');
 // Call readCommands with the commands directory path
 readCommands(path.join(__dirname, 'commands'));
 
 // Construct and prepare an instance of the REST module
 const rest = new REST().setToken(token);
-
+console.log('--------------------Commands--------------------');
 // and deploy your commands!
 (async () => {
 	try {

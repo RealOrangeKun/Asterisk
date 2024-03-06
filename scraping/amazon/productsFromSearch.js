@@ -21,10 +21,16 @@ const getProductsFromSearch = async (productName) => {
         'pretendToBeVisual': true,
     }).window.document;
     const products = [], titles = [], prices = [], fractions = [], links = [];
-    dom.querySelectorAll('h2.a-size-mini.a-spacing-none.a-color-base.s-line-clamp-2').forEach(title => {
-        titles.push(title.textContent.trim());
-        const link = title.querySelector('a');
-        link ? links.push('https://amazon.com/' + link.href) : links.push(null);
+    // Using a regular expression to match any clamp-number
+    const regex = /^a-size-mini.*s-line-clamp-\d+$/;
+    dom.querySelectorAll('h2[class]').forEach(title => {
+        if (regex.test(title.className)) {
+            let text = title.querySelector('span.a-size-base-plus.a-color-base.a-text-normal');
+            if (!text) text = title.querySelector('span.a-size-medium.a-color-base.a-text-normal');
+            titles.push(text.textContent.trim());
+            const link = title.querySelector('a');
+            links.push(link ? 'https://amazon.com/' + link.href : null);
+        }
     });
     dom.querySelectorAll('span.a-price-whole').forEach(price => {
         prices.push(price.textContent.trim().slice(0, -1));
@@ -40,9 +46,8 @@ const getProductsFromSearch = async (productName) => {
         });
     }
     return products;
-
 };
-getProductsFromSearch('laptop').then(p => console.log(p)).catch(e => console.log(e));
+
 module.exports = {
     getProductsFromSearch,
 };
