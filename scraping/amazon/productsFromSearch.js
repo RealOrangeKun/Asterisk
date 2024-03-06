@@ -16,31 +16,33 @@ const getProductsFromSearch = async (productName) => {
             'Content-Type': 'text/html',
         },
     });
-    try {
-        const dom = new JSDOM(response.data, {
-            'resources': 'usable',
-            'pretendToBeVisual': true,
-        }).window.document;
-        const products = [], titles = [], prices = [];
-        dom.querySelectorAll('h2.a-size-mini.a-spacing-none.a-color-base.s-line-clamp-2').forEach(title => {
-            titles.push(title.textContent.trim());
+    const dom = new JSDOM(response.data, {
+        'resources': 'usable',
+        'pretendToBeVisual': true,
+    }).window.document;
+    const products = [], titles = [], prices = [], fractions = [], links = [];
+    dom.querySelectorAll('h2.a-size-mini.a-spacing-none.a-color-base.s-line-clamp-2').forEach(title => {
+        titles.push(title.textContent.trim());
+        const link = title.querySelector('a');
+        link ? links.push('https://amazon.com/' + link.href) : links.push(null);
+    });
+    dom.querySelectorAll('span.a-price-whole').forEach(price => {
+        prices.push(price.textContent.trim().slice(0, -1));
+    });
+    dom.querySelectorAll('span.a-price-fraction').forEach(price => {
+        fractions.push(price.textContent.trim());
+    });
+    for (let i = 0; i < Math.min(prices.length, titles.length); i++) {
+        products.push({
+            'title': titles[i],
+            'price': `$${prices[i]}.${fractions[i]}`,
+            'link': links[i],
         });
-        dom.querySelectorAll('span.a-price-whole').forEach(price => {
-            prices.push(price.textContent.trim().slice(0, -1));
-        });
-        for (let i = 0; i < prices.length; i++) {
-            products.push({
-                'title': titles[i],
-                'price': prices[i],
-            });
-        }
-        return products;
     }
-    catch (e) {
-        console.log('err');
-    }
-};
+    return products;
 
+};
+getProductsFromSearch('laptop').then(p => console.log(p)).catch(e => console.log(e));
 module.exports = {
     getProductsFromSearch,
 };

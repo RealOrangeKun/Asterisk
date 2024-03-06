@@ -2,10 +2,10 @@ const { REST, Routes } = require('discord.js');
 const { clientId, guildId, token, adminCommands } = require('./config.json');
 const fs = require('fs');
 const path = require('path');
+const chalk = require('chalk');
 
 const commands = [], commands2 = [];
 const commandsMap = new Map();
-
 
 function readCommands(dir) {
 	const files = fs.readdirSync(dir);
@@ -26,9 +26,10 @@ function readCommands(dir) {
 					commands.push(command.data.toJSON());
 					commandsMap.set(command.data.name, command);
 				}
+				console.log(chalk.green(`[SUCCESS] Command "${command.data.name}" added successfully.`));
 			}
 			else {
-				console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
+				console.log(chalk.yellow(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`));
 			}
 		}
 	}
@@ -53,12 +54,12 @@ const rest = new REST().setToken(token);
 			Routes.applicationGuildCommands(clientId, guildId),
 			{ body: commands2 },
 		);
-		console.log(`Successfully reloaded ${data.length} application (/) commands.`);
-		console.log(`Added Admin commands to test server, length: ${adminData.length}`);
+		console.log(chalk.green(`Successfully reloaded ${data.length} application (/) commands.`));
+		console.log(chalk.green(`Added Admin commands to test server, length: ${adminData.length}`));
 	}
 	catch (error) {
 		// And of course, make sure you catch and log any errors!
-		console.error(error);
+		console.error(chalk.red(`[ERROR] ${error}`));
 	}
 })();
 

@@ -2,7 +2,9 @@
 const { Events, ActivityType, Client, GuildMember } = require('discord.js');
 const { authorsIds } = require('./config.json');
 const membersWhoVoted = new Set();
+const pages = new Map();
 let member;
+
 /**
  *
  * @param {Client} client
@@ -17,7 +19,7 @@ module.exports.listen = function (client) {
 				state: 'Floating in the sky!🌃⭐',
 			}],
 		});
-		console.log(client.user.tag);
+		console.log(client.user.tag, 'Version: ' + require('./package.json').version);
 	});
 	client.on(Events.InteractionCreate, async interaction => {
 		const command = interaction.client.commands.get(interaction.commandName);
@@ -34,6 +36,9 @@ module.exports.listen = function (client) {
 				}
 			}
 			if (interaction.commandName === 'kick') { member = await command.execute(interaction); }
+			else if (interaction.commandName === 'amazon') {
+				pages.set(`${interaction.user.id}`, await command.execute(interaction));
+			}
 			else { await command.execute(interaction); }
 		}
 		else if (interaction.isButton()) {
@@ -77,6 +82,17 @@ module.exports.listen = function (client) {
 					await interaction.message.edit({ content: 'There was an error while trying to kick', components: null });
 					setTimeout(() => interaction.message.delete(), 1500);
 				}
+			}
+			else if (info[0] === 'Amazon') {
+				const amazon = interaction.client.commands.get('amazon');
+				const embed = interaction.message.embeds[0];
+				const key = `${interaction.user.id}`;
+				switch (info[1]) {
+					case 'Forward': {
+						pages.set(key, await amazon.forward(interaction, pages.get(key)));
+					} break;
+				}
+				await interaction.reply({ content: 'Next Page', ephemeral: true });
 			}
 		}
 	},
