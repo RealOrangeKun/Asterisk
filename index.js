@@ -1,10 +1,13 @@
 const { Client, Collection, GatewayIntentBits: { Guilds } } = require('discord.js');
 const { token } = require('./config.json');
 
+const chalk = require('chalk');
+
 const bot = new Client({ intents: [Guilds] });
 
 const start = async function () {
 	try {
+		console.log(chalk.green('Connected to Database! 🍃'));
 		await bot.login(token);
 	}
 	catch (e) {
@@ -14,11 +17,10 @@ const start = async function () {
 };
 
 
-bot.commands = new Collection(require('./deploy-commands.js'));
-const events = require('./events.js');
+bot.commands = new Collection(require('./controllers/deploy-commands.js'));
+const events = require('./controllers/events.js');
 
 events.listen(bot);
-
 
 start();
 

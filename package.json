@@ -13,7 +13,9 @@
     "discord.js": "^14.14.1",
     "eslint": "^8.57.0",
     "jsdom": "^24.0.0",
-    "moment-timezone": "^0.5.45"
+    "moment-timezone": "^0.5.45",
+    "mongodb": "^6.4.0",
+    "mongoose": "^8.2.1"
   },
   "keywords": [],
   "author": "Orangekun",

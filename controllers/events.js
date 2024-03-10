@@ -1,7 +1,10 @@
 // eslint-disable-next-line no-unused-vars
 const { Events, ActivityType, Client, GuildMember } = require('discord.js');
-const { authorsIds } = require('./config.json');
+const { authorsIds, mongodb } = require('../config.json');
 const membersWhoVoted = new Set();
+const mongoose = require('mongoose');
+/** @type {import('mongoose').Model} */
+const Guild = require('../models/guild.model');
 const pages = new Map();
 let member;
 
@@ -9,17 +12,23 @@ let member;
  *
  * @param {Client} client
  */
-module.exports.listen = function (client) {
-	client.once(Events.ClientReady, async function () {
-		client.user.setPresence({
-			status: 'dnd',
-			activities: [{
-				name: 'customstatus',
-				type: ActivityType.Custom,
-				state: 'Floating in the sky!🌃⭐',
-			}],
-		});
-		console.log(client.user.tag, 'Version: ' + require('./package.json').version);
+module.exports.listen = (client) => {
+	client.once(Events.ClientReady, async () => {
+		try {
+			await mongoose.connect(mongodb);
+			client.user.setPresence({
+				status: 'dnd',
+				activities: [{
+					name: 'customstatus',
+					type: ActivityType.Custom,
+					state: 'Floating in the sky!🌃⭐',
+				}],
+			});
+			console.log(client.user.tag, 'Version: ' + require('../package.json').version);
+		}
+		catch (e) {
+			console.log(e.message);
+		}
 	});
 	client.on(Events.InteractionCreate, async interaction => {
 		const command = interaction.client.commands.get(interaction.commandName);
@@ -107,4 +116,11 @@ module.exports.listen = function (client) {
 		}
 	},
 	);
+	client.on(Events.GuildCreate, async guild => {
+		const newGuild = Guild.create({
+			name: guild.name,
+			serverID: guild.id,
+			memberCount: Number(guild.memberCount),
+		});
+	});
 };
