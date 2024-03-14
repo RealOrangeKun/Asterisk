@@ -1,6 +1,5 @@
 // eslint-disable-next-line no-unused-vars
 const { SlashCommandBuilder, ChatInputCommandInteraction, PermissionsBitField, ActionRowBuilder, ButtonBuilder, ButtonStyle, ButtonInteraction, GuildMember } = require('discord.js');
-const { bot } = require('../../index.js');
 
 
 module.exports = {
