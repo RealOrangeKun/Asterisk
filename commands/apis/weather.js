@@ -66,8 +66,8 @@ module.exports = {
                     { name: 'UV Index', value: String(uvIndex), inline: true },
                     { name: 'Timezone', value: timezone, inline: true },
                     { name: 'Current Date and Time', value: String(currentTime), inline: true },
-                    { name: 'Sunrise Time', value: String(currentDay.sun.rise).split('T')[1] },
-                    { name: 'Sunset Time', value: String(currentDay.sun.set).split('T')[1] },
+                    { name: 'Sunrise Time', value: String(currentDay.sun.rise).split('T')[1] + 'AM' },
+                    { name: 'Sunset Time', value: String(currentDay.sun.set - 12).split('T')[1] + 'PM' },
                 )
                 .setFooter({ text: 'Powered by Meteosource' })
                 .setThumbnail(url);

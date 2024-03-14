@@ -23,7 +23,7 @@ module.exports = {
             let embedLength = 0;
             let i;
             for (i = 0; i < Math.min(products.length, 10); i++) {
-                if (embedLength >= 5000) break;
+                if (embedLength >= 3000) break;
                 info.addFields(
                     {
                         name: 'Product ' + String(i + 1), value: `[${products[i].title}](${products[i].link}) - ` +

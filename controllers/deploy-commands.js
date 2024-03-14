@@ -36,7 +36,7 @@ function readCommands(dir) {
 }
 console.log('--------------------Commands--------------------');
 // Call readCommands with the commands directory path
-readCommands(path.join(__dirname, 'commands'));
+readCommands(path.resolve(__dirname, '..', 'commands'));
 
 // Construct and prepare an instance of the REST module
 const rest = new REST().setToken(token);
