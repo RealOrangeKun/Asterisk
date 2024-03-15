@@ -15,8 +15,8 @@ module.exports = {
      * @param {ChatInputCommandInteraction} interaction
      */
     async execute(interaction) {
-        await interaction.reply({ content: 'Getting info from Amazon..', fetchReply: true, ephemeral: true });
         try {
+            await interaction.reply({ content: 'Getting info from Amazon..', fetchReply: true, ephemeral: true });
             products = await getProductsFromSearch(interaction.options.getString('product'));
             const info = new EmbedBuilder()
                 .setTitle('Search Results for the word ' + interaction.options.getString('product'));
