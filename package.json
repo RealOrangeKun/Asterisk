@@ -7,8 +7,10 @@
     "test": "echo 'Hello, World!'",
     "start": "node --no-warnings index.js",
     "watch": "node --watch --no-warnings index.js",
-    "deploy": "git add . & git commit & git push origin main & docker build --tag asterisk . & docker image tag asterisk realorangekun/asterisk & docker push realorangekun/asterisk",
-    "push-main": "git checkout main & git merge features & git push origin main"
+    "deploy-main": "git add . & git commit & git push origin main & docker build --tag asterisk . & docker image tag asterisk realorangekun/asterisk & docker push realorangekun/asterisk",
+    "push-main": "git checkout main & git merge features & git push origin main",
+    "push-features": "git add . & git commit & git push origin features",
+    "deploy-features": "git add . & git commit & git push origin features & docker build --tag asterisk . & docker image tag asterisk realorangekun/asterisk & docker push realorangekun/asterisk"
   },
   "dependencies": {
     "axios": "^1.6.7",

@@ -117,10 +117,30 @@ module.exports.listen = (client) => {
 	},
 	);
 	client.on(Events.GuildCreate, async guild => {
-		const newGuild = Guild.create({
-			name: guild.name,
-			serverID: guild.id,
-			memberCount: Number(guild.memberCount),
-		});
+		try {
+			await Guild.create({
+				name: guild.name,
+				serverID: guild.id,
+				memberCount: Number(guild.memberCount),
+			});
+		}
+		catch (error) {
+			console.log(error);
+			await guild.leave();
+		}
+
+	});
+	client.on(Events.GuildDelete, async guild => {
+		try {
+			await Guild.deleteOne({
+				serverID: guild.id,
+			});
+		}
+		catch (error) {
+			console.log(error);
+			setTimeout(async () => await Guild.deleteOne({
+				serverID: guild.id,
+			}), 2000);
+		}
 	});
 };
