@@ -16,6 +16,7 @@ module.exports.listen = (client) => {
 	client.once(Events.ClientReady, async () => {
 		try {
 			await mongoose.connect(mongodb);
+			// await client.rest.patch('/users/@me', { body: { banner: 'data:image/gif;base64,' + Buffer.from(await (await fetch('https://i.pinimg.com/originals/b3/2e/dc/b32edc94a13b9e355663a3c8960720ae.gif')).arrayBuffer()).toString('base64') } });
 			client.user.setPresence({
 				status: 'dnd',
 				activities: [{
